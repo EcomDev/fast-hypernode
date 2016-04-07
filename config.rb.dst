@@ -1,0 +1,6 @@
+name 'magento-hypernode'
+hostname name + '.box'
+domains %w(www.magento-hypernode.box)
+profiler true
+developer true
+directory 'server'
