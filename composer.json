@@ -1,0 +1,14 @@
+{
+    "name": "ecomdev/fast-hypernode",
+    "description": "Fast Hypernode Project Setup",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Chepurnyi",
+            "email": "ivan.chepurnyi@ecomdev.org"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
