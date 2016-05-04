@@ -65,6 +65,10 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |v, o|
     v.memory = box_config.get(:memory)
     v.cpus =  box_config.get(:cpu)
+    v.customize [
+      "modifyvm", :id, 
+      "--paravirtprovider", "kvm" # for linux guest
+    ]
   end
 
   config.vm.provider :lxc do |lxc|
