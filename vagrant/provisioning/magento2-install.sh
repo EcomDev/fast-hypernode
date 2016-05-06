@@ -7,6 +7,9 @@ HOME_DIR=$(getent passwd ${VAGRANT_USER} | cut -d ':' -f6)
 
 cd ${HOME_DIR}/magento2
 
+MYSQLPASSWORD=$(awk -F "=" '/password/ {print $2}' ${HOME_DIR}/.my.cnf | sed -e 's/^[ \t]*//')
+mysql -u app -p${MYSQLPASSWORD} -e "create database magento2"
+
 echo "Downloading Magento 2..."
 
 [ -d ${HOME_DIR}/magento2/bin ] || $AS_USER wget -qO- https://magento.mirror.hypernode.com/releases/magento2-latest.tar.gz | $AS_USER tar xfz -
