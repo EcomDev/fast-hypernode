@@ -91,7 +91,8 @@ Vagrant.configure("2") do |config|
         VAGRANT_GID: box_config.get(:gid).to_s,
         VAGRANT_USER: box_config.get(:user),
         VAGRANT_GROUP: box_config.get(:group),
-        VAGRANT_HOSTNAME: box_config.get(:hostname)
+        VAGRANT_HOSTNAME: box_config.get(:hostname),
+        VAGRANT_FPM_SERVICE: box_config.flag?(:php7) ? 'php7.0-fpm' : 'php5-fpm'
     }
   end
 
