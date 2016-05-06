@@ -4,9 +4,9 @@ set -e
 
 echo "Changing user id"
 service nginx stop
-service php5-fpm stop
+service ${VAGRANT_FPM_SERVICE} stop
 service hhvm stop
 usermod -u ${VAGRANT_UID} ${VAGRANT_USER}
 service nginx start
-service php5-fpm start
+service ${VAGRANT_FPM_SERVICE} start
 service hhvm start
