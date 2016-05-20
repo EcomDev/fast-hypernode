@@ -30,3 +30,8 @@ fi
 # Update magerun to the latest version
 /usr/local/bin/n98-magerun -q self-update || true
 /usr/local/bin/n98-magerun2 -q self-update || true
+
+# Remove mysql user from cgroup limitation, as hardcoded ones during deployment of hypernode box swap all stuff out
+tee /etc/cgrules.conf <<"CONFIG"
+solr            memory          limited
+CONFIG
