@@ -33,6 +33,5 @@ fi
 
 # Remove mysql user from cgroup limitation, as hardcoded ones during deployment of hypernode box swap all stuff out
 tee /etc/cgrules.conf <<"CONFIG"
-app             memory          limited
 solr            memory          limited
 CONFIG
