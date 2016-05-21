@@ -36,13 +36,13 @@ if (!empty($_SERVER['PHP_PROFILE']) || !empty($_COOKIE['PHP_PROFILE'])) {
 }
 PHPFILE1
 
-tee /etc/php5/fpm/conf.d/tideways.ini <<PHPINI
+tee ${VAGRNAT_PHP_ETC_DIR}/fpm/conf.d/tideways.ini <<PHPINI
 extension=tideways.so
 auto_prepend_file=$HOME_DIR/xhprof/prepend.php
 tideways.auto_prepend_library=0
 PHPINI
 
-cp /etc/php5/fpm/conf.d/tideways.ini /etc/php5/cli/conf.d/tideways.ini
+cp ${VAGRNAT_PHP_ETC_DIR}/fpm/conf.d/tideways.ini ${VAGRNAT_PHP_ETC_DIR}/cli/conf.d/tideways.ini
 
 if [ ! -L /data/web/staging ]
 then
