@@ -93,7 +93,8 @@ Vagrant.configure("2") do |config|
         VAGRANT_GROUP: box_config.get(:group),
         VAGRANT_HOSTNAME: box_config.get(:hostname),
         VAGRANT_FPM_SERVICE: box_config.flag?(:php7) ? 'php7.0-fpm' : 'php5-fpm',
-        VAGRNAT_PHP_ETC_DIR: box_config.flag?(:php7) ? '/etc/php/7.0/' : '/etc/php5/'
+        VAGRNAT_PHP_ETC_DIR: box_config.flag?(:php7) ? '/etc/php/7.0/' : '/etc/php5/',
+        VAGRNAT_PHP_PACKAGE_PREFIX: box_config.flag?(:php7) ? 'php7.0' : 'php5'
     }
   end
 

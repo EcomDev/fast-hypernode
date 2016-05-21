@@ -6,7 +6,7 @@ AS_USER="sudo -u ${VAGRANT_USER}"
 CUR_DIR=$(pwd)
 HOME_DIR=$(getent passwd ${VAGRANT_USER} | cut -d ':' -f6)
 
-apt-get install php-pear php5-dev graphviz build-essential -y -q
+apt-get install ${VAGRNAT_PHP_PACKAGE_PREFIX}-dev graphviz build-essential -y -q
 
 [ -d $HOME_DIR/tideways-profiler ] || $AS_USER mkdir $HOME_DIR/tideways-profiler
 [ -d $HOME_DIR/tideways-profiler/.git ] || $AS_USER git clone https://github.com/tideways/php-profiler-extension.git $HOME_DIR/tideways-profiler
