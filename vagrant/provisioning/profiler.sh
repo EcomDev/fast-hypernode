@@ -6,7 +6,7 @@ AS_USER="sudo -u ${VAGRANT_USER}"
 CUR_DIR=$(pwd)
 HOME_DIR=$(getent passwd ${VAGRANT_USER} | cut -d ':' -f6)
 
-apt-get install php-pear php5-dev graphviz build-essential -y -q
+apt-get install ${VAGRNAT_PHP_PACKAGE_PREFIX}-dev graphviz build-essential -y -q
 
 [ -d $HOME_DIR/tideways-profiler ] || $AS_USER mkdir $HOME_DIR/tideways-profiler
 [ -d $HOME_DIR/tideways-profiler/.git ] || $AS_USER git clone https://github.com/tideways/php-profiler-extension.git $HOME_DIR/tideways-profiler
@@ -36,13 +36,13 @@ if (!empty($_SERVER['PHP_PROFILE']) || !empty($_COOKIE['PHP_PROFILE'])) {
 }
 PHPFILE1
 
-tee /etc/php5/fpm/conf.d/tideways.ini <<PHPINI
+tee ${VAGRNAT_PHP_ETC_DIR}/fpm/conf.d/tideways.ini <<PHPINI
 extension=tideways.so
 auto_prepend_file=$HOME_DIR/xhprof/prepend.php
 tideways.auto_prepend_library=0
 PHPINI
 
-cp /etc/php5/fpm/conf.d/tideways.ini /etc/php5/cli/conf.d/tideways.ini
+cp ${VAGRNAT_PHP_ETC_DIR}/fpm/conf.d/tideways.ini ${VAGRNAT_PHP_ETC_DIR}/cli/conf.d/tideways.ini
 
 if [ ! -L /data/web/staging ]
 then
