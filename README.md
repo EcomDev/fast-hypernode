@@ -60,8 +60,8 @@ directory 'server' # Directory into which NFS share will be mounted on your host
 
 You can easily add more provision shell scripts from configuration file (config.rb):
 ```ruby
-add_shell 'some-custom-shell-script.sh'
+shell_add 'some-custom-shell-script.sh'
 
 # Will provision only if PHP7 flag is turned on
-add_shell 'some-custom-script-for-php7.sh', :php7  
+shell_add 'some-custom-script-for-php7.sh', :php7  
 ```
