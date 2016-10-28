@@ -33,7 +33,6 @@ fi
 
 usermod -a -G admin app
 
-# Remove mysql user from cgroup limitation, as hardcoded ones during deployment of hypernode box swap all stuff out
-tee /etc/cgrules.conf <<"CONFIG"
-solr            memory          limited
-CONFIG
+# delete cgroups for memory
+truncate -s 0 /etc/cgrules.conf
+cgdelete -r limited || true

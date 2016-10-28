@@ -4,8 +4,9 @@ set -e
 AS_USER="sudo -u ${VAGRANT_USER}"
 CUR_DIR=$(pwd)
 HOME_DIR=$(getent passwd ${VAGRANT_USER} | cut -d ':' -f6)
+MAGENTO_DIR=${VAGRANT_PROJECT_DIR:-magento2}
 
-cd $HOME_DIR/magento2
+cd $HOME_DIR/${MAGENTO_DIR}
 
 $AS_USER bin/magento cache:disable full_page
 $AS_USER bin/magento cache:disable full_page
