@@ -1,11 +1,23 @@
-%w(vagrant-hostmanager vagrant-auto_network vagrant-nfs_guest).each do |plugin|
+%w(vagrant-hostmanager vagrant-auto_network).each do |plugin|
  unless Vagrant.has_plugin?(plugin)
    raise 'In order to use this box, you must install plugin: ' + plugin
  end
 end
 
+mount_plugin=nil
+
+%w(vagrant-unison2 vagrant-nfs_guest).each do |plugin|
+ if Vagrant.has_plugin?(plugin)
+    mount_plugin=plugin 
+    break
+ end  
+end
+
+if mount_plugin.nil?
+   raise 'No efficient shared mount plugins found, please install vagrant-unison2 or vagrant-nfs_guest'
+end
+
 require_relative 'vagrant/inline/config'
-require_relative 'vagrant/inline/nfs-plugin'
 
 # Define Vagrantfile configuration options
 VagrantApp::Config.option(:varnish, false) # If varnish needs to be enabled
@@ -24,7 +36,11 @@ VagrantApp::Config.option(:varnish, false) # If varnish needs to be enabled
   .option(:group, 'app') # Group name for share
   .option(:uid, Process.euid) # User ID for mapping
   .option(:gid, Process.egid) # Group ID for mapping
-  .option(:directory, 'server') # Directory to be used as mount on host machine
+  .option(:directory, 'server') # Directory to be used as mount on host machine for NFS guest plugin
+  .option(:unison_host, 'project') # Directory for project code
+  .option(:unison_guest, 'project') # Directory for project code
+  .option(:unison_ignore, 'Name {.DS_Store,.git}') # Unison ignore pattern
+  .option(:unison_manage_permissions, false) # Unison manage permissions
   .option(:network, '33.33.33.0/24') # Directory to be used as mount on host machine
 
 Vagrant.configure("2") do |config|
@@ -78,12 +94,11 @@ Vagrant.configure("2") do |config|
   # Disable default /vagrant mount as we use custom user for box
   config.vm.synced_folder '.', '/vagrant/', disabled: true
 
-  config.vm.synced_folder box_config.get(:directory), '/data/web', type: 'nfs_guest', create: true,
-    linux__nfs_options: %w(rw no_subtree_check all_squash insecure async),
-    map_uid: box_config.get(:uid).to_s,
-    map_gid: box_config.get(:gid).to_s,
-    owner: box_config.get(:user),
-    group: box_config.get(:group)
+  if mount_plugin == 'vagrant_nfs-guest'
+    project_dir = 'magento2'
+  else
+    project_dir =  box_config.get(:unison_guest)
+  end
 
   box_config.shell_list.each do |file|
     config.vm.provision 'shell', path: 'vagrant/provisioning/' + file, env: {
@@ -94,7 +109,8 @@ Vagrant.configure("2") do |config|
         VAGRANT_HOSTNAME: box_config.get(:hostname),
         VAGRANT_FPM_SERVICE: box_config.flag?(:php7) ? 'php7.0-fpm' : 'php5-fpm',
         VAGRNAT_PHP_ETC_DIR: box_config.flag?(:php7) ? '/etc/php/7.0/' : '/etc/php5/',
-        VAGRNAT_PHP_PACKAGE_PREFIX: box_config.flag?(:php7) ? 'php7.0' : 'php5'
+        VAGRNAT_PHP_PACKAGE_PREFIX: box_config.flag?(:php7) ? 'php7.0' : 'php5',
+        VAGRANT_PROJECT_DIR: box_config.get(:unison_guest)
     }
   end
 
@@ -107,6 +123,24 @@ Vagrant.configure("2") do |config|
     node.vm.hostname = box_config.get(:hostname)
     node.vm.network :private_network, auto_network: true
     node.hostmanager.aliases = box_config.get(:domains)
+
+
+    if mount_plugin == 'vagrant_nfs-guest'
+      node.vm.synced_folder box_config.get(:directory), '/data/web', type: 'nfs_guest', create: true,
+                              linux__nfs_options: %w(rw no_subtree_check all_squash insecure async),
+                              map_uid: box_config.get(:uid).to_s,
+                              map_gid: box_config.get(:gid).to_s,
+                              owner: box_config.get(:user),
+                              group: box_config.get(:group)
+    else
+      config.unison.host_folder = box_config.get(:unison_host)
+      config.unison.guest_folder = box_config.get(:unison_guest)
+      config.unison.ignore = box_config.get(:unison_ignore)
+      config.unison.perm = box_config.flag?(:unison_manage_permissions) ? 1 : 0
+      config.unison.ssh_host = box_config.get(:hostname)
+      config.unison.ssh_user = 'app'
+      config.unison.ssh_port = 22
+    end
   end
 
 end
