@@ -36,3 +36,5 @@ usermod -a -G admin app
 # delete cgroups for memory
 truncate -s 0 /etc/cgrules.conf
 cgdelete -r limited || true
+
+apt-get install unison
