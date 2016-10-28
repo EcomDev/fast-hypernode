@@ -37,4 +37,3 @@ usermod -a -G admin app
 truncate -s 0 /etc/cgrules.conf
 cgdelete -r limited || true
 
-apt-get install unison
