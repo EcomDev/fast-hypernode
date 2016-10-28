@@ -41,6 +41,7 @@ VagrantApp::Config.option(:varnish, false) # If varnish needs to be enabled
   .option(:unison_guest, 'project') # Directory for project code
   .option(:unison_ignore, 'Name {.DS_Store,.git}') # Unison ignore pattern
   .option(:unison_manage_permissions, false) # Unison manage permissions
+  .option(:unison, mount_plugin == 'vagrant-unison2') # Unison plugin installation
   .option(:network, '33.33.33.0/24') # Directory to be used as mount on host machine
 
 Vagrant.configure("2") do |config|
@@ -60,6 +61,7 @@ Vagrant.configure("2") do |config|
     .shell_add('magento2-install.sh', [:magento2, :install]) # M2 Installer, depends on :magento2 and :install
     .shell_add('magento2-developer.sh', [:magento2, :install, :developer]) # M2 Developer options, depends on :magento2, :install, :developer
     .shell_add('shell.sh', :shell) # Fish shell installer, depends on :shell flag
+    .shell_add('unison.sh', :unison)
     .shell_add('hello.sh') # Final message with connection instructions
 
   # Loads config.rb from the same directory where Vagrantfile is in
@@ -94,7 +96,7 @@ Vagrant.configure("2") do |config|
   # Disable default /vagrant mount as we use custom user for box
   config.vm.synced_folder '.', '/vagrant/', disabled: true
 
-  if mount_plugin == 'vagrant_nfs-guest'
+  unless box_config.flag?(:unison)
     project_dir = 'magento2'
   else
     project_dir =  box_config.get(:unison_guest)
@@ -110,7 +112,7 @@ Vagrant.configure("2") do |config|
         VAGRANT_FPM_SERVICE: box_config.flag?(:php7) ? 'php7.0-fpm' : 'php5-fpm',
         VAGRNAT_PHP_ETC_DIR: box_config.flag?(:php7) ? '/etc/php/7.0/' : '/etc/php5/',
         VAGRNAT_PHP_PACKAGE_PREFIX: box_config.flag?(:php7) ? 'php7.0' : 'php5',
-        VAGRANT_PROJECT_DIR: box_config.get(:unison_guest)
+        VAGRANT_PROJECT_DIR: project_dir
     }
   end
 
@@ -125,7 +127,7 @@ Vagrant.configure("2") do |config|
     node.hostmanager.aliases = box_config.get(:domains)
 
 
-    if mount_plugin == 'vagrant_nfs-guest'
+    unless box_config.get(:unison)
       node.vm.synced_folder box_config.get(:directory), '/data/web', type: 'nfs_guest', create: true,
                               linux__nfs_options: %w(rw no_subtree_check all_squash insecure async),
                               map_uid: box_config.get(:uid).to_s,

@@ -9,7 +9,7 @@ MAGENTO_DIR=${VAGRANT_PROJECT_DIR:-magento2}
 cd ${HOME_DIR}/${MAGENTO_DIR}
 
 MYSQLPASSWORD=$(awk -F "=" '/password/ {print $2}' ${HOME_DIR}/.my.cnf | sed -e 's/^[ \t]*//')
-mysql -u app -p${MYSQLPASSWORD} -e "create database magento2"
+[ -f ${HOME_DIR}/${MAGENTO_DIR}/app/etc/env.php ] || mysql -u app -p${MYSQLPASSWORD} -e "create database magento2"
 
 echo "Downloading Magento 2..."
 
