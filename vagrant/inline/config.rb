@@ -78,7 +78,7 @@ module VagrantApp
 
     def shell_list
       scripts = @shell.select do |info|
-        flag?(info[:flags])
+        flag?(info[:flags], info[:inverse])
       end
       scripts.collect do |info|
         info[:file]
