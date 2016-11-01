@@ -49,11 +49,10 @@ Vagrant.configure("2") do |config|
   # Prepare configuration and setup shell scripts for it
   current_file = Pathname.new(__FILE__)
   box_config = VagrantApp::Config.new
-
   # Base hypernode provisioner
   box_config.shell_add('hypernode.sh')
     .shell_add('composer.sh') # Composer installer
-    .shell_add('nfs.sh') # NFS server modifications to have proper permissions
+    .shell_add('nfs.sh', :unison, true) # NFS server modifications to have proper permissions
     .shell_add('developer.sh', :developer) # Developer mode setting, depends on :developer configuration flag
     .shell_add('profiler.sh', :profiler) # Profiler installer, depends on :profiler configuration flag
     .shell_add('disable-varnish.sh', :varnish, true) # Varnish disabler, depends on :varnish inverted flag
