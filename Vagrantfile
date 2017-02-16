@@ -141,6 +141,7 @@ Vagrant.configure("2") do |config|
       config.unison.ssh_host = box_config.get(:hostname)
       config.unison.ssh_user = 'app'
       config.unison.ssh_port = 22
+      config.unison.ssh_use_agent = true
     end
   end
 
