@@ -54,7 +54,7 @@ Vagrant.configure("2") do |config|
     .shell_add('composer.sh') # Composer installer
     .shell_add('nfs.sh', :unison, true) # NFS server modifications to have proper permissions
     .shell_add('developer.sh', :developer) # Developer mode setting, depends on :developer configuration flag
-    .shell_add('profiler.sh', :profiler) # Profiler installer, depends on :profiler configuration flag
+    .shell_add('blackfire.sh', :profiler) # Profiler installer, depends on :profiler configuration flag
     .shell_add('disable-varnish.sh', :varnish, true) # Varnish disabler, depends on :varnish inverted flag
     .shell_add('magento2.sh', :magento2) # M2 Nginx Config Flag, depends on :magento2 flag
     .shell_add('magento2-install.sh', [:magento2, :install]) # M2 Installer, depends on :magento2 and :install
@@ -70,8 +70,8 @@ Vagrant.configure("2") do |config|
   AutoNetwork.default_pool = box_config.get(:network)
 
   if box_config.flag?(:php7)
-    config.vm.box = 'hypernode_php7'
-    config.vm.box_url = 'http://vagrant.hypernode.com/customer/php7/catalog.json'
+    config.vm.box = 'hypernode_xenial'
+    config.vm.box_url = 'http://vagrant.hypernode.com/customer/xenial/catalog.json'
   else
     config.vm.box = 'hypernode_php5'
     config.vm.box_url = 'http://vagrant.hypernode.com/customer/php5/catalog.json'

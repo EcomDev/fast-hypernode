@@ -31,9 +31,9 @@ fi
 /usr/local/bin/n98-magerun -q self-update || true
 /usr/local/bin/n98-magerun2 -q self-update || true
 
-usermod -a -G admin app
+usermod -a -G sudo app
 
-# delete cgroups for memory
-truncate -s 0 /etc/cgrules.conf
-cgdelete -r limited || true
+# for xenial switch to PHP7.1
+command -v hypernode-switch-php >/dev/null 2>&1 && hypernode-switch-php 7.1 2>&1
+
 
