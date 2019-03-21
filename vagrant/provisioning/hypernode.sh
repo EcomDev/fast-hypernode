@@ -34,6 +34,6 @@ fi
 usermod -a -G sudo app
 
 # for xenial switch to PHP7.1
-command -v hypernode-switch-php >/dev/null 2>&1 && hypernode-switch-php 7.1 2>&1
+command -v hypernode-switch-php >/dev/null 2>&1 && hypernode-switch-php 7.2 2>&1
 
 
